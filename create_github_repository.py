@@ -36,8 +36,12 @@ def get_authenticated_username(headers):
         return None
 
 def clone_repository(github_username, repo_name):
-    """Clone the repository to the parent directory of the current working directory."""
-    repo_url = f"https://github.com/{github_username}/{repo_name}.git"
+    """
+    Clone the repository to the parent directory of the current working directory using SSH.
+    Ensure your SSH keys are configured with GitHub for this to work.
+    """
+    # Use SSH URL for cloning, which avoids embedding the token in the URL.
+    repo_url = f"git@github.com:{github_username}/{repo_name}.git"
     parent_dir = os.path.dirname(os.getcwd())
     target_dir = os.path.join(parent_dir, repo_name)
     debug(f"Cloning repository from {repo_url} to {target_dir}")
@@ -56,9 +60,9 @@ def clone_repository(github_username, repo_name):
 def main():
     print("============================================")
     print("  GitHub Repository Setup CLI")
-    print("  This tool creates a new GitHub repository")
+    print("  This tool creates a new GitHub repository,")
     print("  sets up a 'develop' branch based on 'main',")
-    print("  and then clones the repository to the parent directory.")
+    print("  and then clones the repository to the parent directory using SSH.")
     print("============================================\n")
 
     # Retrieve GitHub token from global Git configuration.
@@ -162,7 +166,7 @@ def main():
         sys.exit(1)
     print("SUCCESS: 'develop' branch created successfully.")
 
-    # Step 4: Clone the repository to the parent directory.
+    # Step 4: Clone the repository to the parent directory using SSH.
     clone_repository(github_username, repo_name)
 
 if __name__ == '__main__':
